@@ -1,48 +1,71 @@
-import produits from '../public/liste_produits_quotidien.json';
-const { afficherProduits } = require('../src/main.js');
+/**
+ * @jest-environment jsdom
+ */
+import {
+    afficherProduits,
+    searchProductsByName,
+    sortProductsByPriceAsc,
+    sortProductsByNameAsc,
+    ajouterAuPanier
+} from '../src/main.js';
 
-const mockProduits = [
-    { nom: "Produit A", quantite_stock: 10, prix_unitaire: 5 },
-    { nom: "Produit B", quantite_stock: 5, prix_unitaire: 10 }
-  ];
+describe('Gestion des produits', () => {
+    let produits;
 
-beforeEach(() => {
-  document.body.innerHTML = `
-    <div id="liste-produits"></div>
-    <span id="compteur-produits"></span>
-  `;
-});
+    beforeEach(() => {
+        document.body.innerHTML = `
+            <span id="compteur-produits"></span>
+            <ul id="liste-produits"></ul>
+        `;
 
-test('afficherProduits affiche correctement le nombre de produits', () => {
+        produits = [
+            { nom: 'Pomme', quantite_stock: 10, prix_unitaire: 5 },
+            { nom: 'Banane', quantite_stock: 15, prix_unitaire: 2 },
+            { nom: 'Carotte', quantite_stock: 5, prix_unitaire: 3 }
+        ];
+    });
 
-  afficherProduits(produits);
-  
-  let compteur = document.getElementById('compteur-produits');
-  expect(compteur.innerText).toBe(`${produits.length} produits`);
-});
+    test('Affichage des produits dans le DOM', () => {
+        afficherProduits(produits);
+        const items = document.querySelectorAll('#liste-produits li');
+        expect(items.length).toBe(3);
+    });
 
-test('afficher les produits après tri par nom', () => {
-    document.body.innerHTML = `
-        <div id="liste-produits"></div>
-        <span id="compteur-produits"></span>
-        <select id="tri">
-            <option value="default">-- Trier --</option>
-            <option value="prix">Par prix</option>
-            <option value="nom">Par nom</option>
-        </select>
-    `;
-    // Ajouter un mock de produits dans le DOM
-    afficherProduits(produits);
+    test('Tri des produits par prix', () => {
+        const sorted = sortProductsByPriceAsc(produits);
+        expect(sorted[0].nom).toBe('Banane');
+        expect(sorted[1].nom).toBe('Carotte');
+        expect(sorted[2].nom).toBe('Pomme');
+    });
 
-    // Simuler un changement dans le select de tri
-    const triSelect = document.getElementById('tri');
-    triSelect.value = 'nom'; // Choisir "Par nom"
-    const event = new Event('change');
-    triSelect.dispatchEvent(event);
+    test('Tri des produits par nom', () => {
+        const sorted = sortProductsByNameAsc(produits);
+        expect(sorted[0].nom).toBe('Banane');
+        expect(sorted[1].nom).toBe('Carotte');
+        expect(sorted[2].nom).toBe('Pomme');
+    });
 
-    // Vérifier que les produits sont triés par nom
-    const produitListe = document.querySelectorAll('#liste-produits li');
-    expect(produitListe[0].textContent).toContain('Produit A');
-    expect(produitListe[1].textContent).toContain('Produit B');
-    expect(produitListe[2].textContent).toContain('Produit C');
+    test('Recherche de produits', () => {
+        const result = searchProductsByName(produits, 'Pom');
+        expect(result.length).toBe(1);
+        expect(result[0].nom).toBe('Pomme');
+    });
+
+    test('Ajout au panier avec mise à jour du stock', () => {
+        localStorage.setItem('produits', JSON.stringify(produits));
+        localStorage.setItem('panier', JSON.stringify([]));
+
+        const bouton = document.createElement('button');
+        bouton.setAttribute('data-id', 'Pomme');
+
+        ajouterAuPanier(produits, bouton);
+
+        const panier = JSON.parse(localStorage.getItem('panier'));
+        const stockProduits = JSON.parse(localStorage.getItem('produits'));
+
+        expect(panier.length).toBe(1);
+        expect(panier[0].nom).toBe('Pomme');
+        expect(panier[0].quantite_stock).toBe(1);
+        expect(stockProduits[0].quantite_stock).toBe(9);
+    });
 });
