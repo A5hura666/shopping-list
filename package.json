@@ -8,7 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "test": "jest",
-    "deploy": "gh-pages -d dist -u \"github-actions-bot <ethan.devfs@pm.me>\""
+    "deploy": "gh-pages -d dist -u \"github-actions-bot <ethan.devfs@pm.me>\" -r https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/A5hura666/shopping-list.git"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
