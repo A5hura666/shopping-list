@@ -4,4 +4,8 @@ export default defineConfig({
     plugins: [
         tailwindcss(),
     ],
+    base: "shopping-list",
+    build: {
+        outDir: 'dist',
+    }
 })

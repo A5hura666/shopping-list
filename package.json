@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "gh-pages -d dist -u \"github-actions-bot <ethan.devfs@pm.me>\" -r https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/A5hura666/shopping-list.git"
   },
   "devDependencies": {
     "vite": "^6.2.0"
