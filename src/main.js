@@ -1,4 +1,4 @@
-import './style.css';
+// import 'style.css';
 
 // Fonction pour afficher les produits
 export function afficherProduits(produits) {
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (localStorage.getItem('produits')) {
         produits = JSON.parse(localStorage.getItem('produits'));
     } else {
-        const response = await fetch('/liste_produits_quotidien.json');
+        const response = await fetch('/shopping-list/liste_produits_quotidien.json');
         produits = await response.json();
         localStorage.setItem('produits', JSON.stringify(produits)); // Sauvegarde initiale
     }

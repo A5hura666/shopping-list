@@ -1,28 +1,22 @@
 import { defineConfig } from 'vite'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
-import { resolve } from 'path'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
+
+let dir = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
-    plugins: [
-        tailwindcss(),
-        viteStaticCopy({
-            targets: [
-                {
-                    src: 'src/**/*',
-                    dest: 'src'
-                }
-            ]
-        })
-    ],
-    base: "/shopping-list/",
+    base: '/shopping-list/',
     build: {
         outDir: 'dist',
         rollupOptions: {
             input: {
-                main: resolve(__dirname, 'index.html'),
-                liste: resolve(__dirname, 'liste.html'),
-            }
+                main: resolve(dir, 'index.html'),
+                list: resolve(__dirname, 'liste.html'),
+            },
         }
-    }
+    },
+    plugins: [
+        tailwindcss(),
+    ],
 })

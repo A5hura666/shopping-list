@@ -1,4 +1,4 @@
-import './style.css';
+// import 'style.css';
 
 // Définition des fonctions en dehors du DOM
 function afficherListeCourse(panier) {
